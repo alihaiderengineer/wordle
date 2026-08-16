@@ -61,8 +61,25 @@ function handelFiveChac() {
 }
 
 function getChanceText() {
-  for (let i = 0; i < textCount; i++) {
-    chanceText += textFields[i].textContent;
+  switch (textCount) {
+    case 5:
+      iterationLoop(5);
+      break;
+    case 10:
+      iterationLoop(10);
+      break;
+    case 15:
+      iterationLoop(15);
+      break;
+    case 20:
+      iterationLoop(20);
+      break;
+    case 25:
+      iterationLoop(25);
+      break;
+    case 30:
+      iterationLoop(30);
+      break;
   }
 }
 
@@ -86,4 +103,12 @@ function handelRow() {
 
 function isLetter(letter) {
   return /^[a-zA-Z]$/.test(letter);
+}
+
+function iterationLoop(start) {
+  chanceText = "";
+
+  for (let i = start - 5; i < start + 5; i++) {
+    chanceText += textFields[i].textContent;
+  }
 }
