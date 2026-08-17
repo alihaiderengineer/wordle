@@ -70,7 +70,11 @@ function handelFiveChac() {
     setTimeout(async () => {
       await isGrammer();
 
-      if (!isWordIsValid) return;
+      if (!isWordIsValid) {
+        rowFields[rowCount].classList.add("attempted");
+        rowFields[rowCount].classList.add("invalid");
+      }
+      return;
 
       rowFields[rowCount].classList.add("attempted");
       checkingCorrection();
