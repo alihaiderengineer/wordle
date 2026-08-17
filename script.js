@@ -67,8 +67,10 @@ function handelFiveChac() {
     getChanceText();
 
     now = Date.now() + 2000;
-    setTimeout(() => {
-      isGrammer();
+    setTimeout(async () => {
+      await isGrammer();
+
+      if (!isWordIsValid) return;
 
       rowFields[rowCount].classList.add("attempted");
       checkingCorrection();
