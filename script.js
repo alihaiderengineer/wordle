@@ -1,23 +1,28 @@
 // dom
 const textFields = document.querySelectorAll(".play-input-div");
 const rowFields = document.querySelectorAll(".play-row");
-const TODAY_URL = "https://words.dev-apis.com/word-of-the-day?muzzel=1";
+const TODAY_URL = "https://words.dev-apis.com/word-of-the-day?puzzle=1";
+const VALIDATER_URL = "https://words.dev-apis.com/validate-word";
+let isWordIsValid = false;
 
 let now = Date.now();
-let TODAY_WORD = "";
+let TODAY_WORD = "happy";
+let TODAY_WORD_STRUCTURE = "happy"; //["c", "i", "g", "a", "r"]
 const chancesTracker = [5, 10, 15, 20, 25, 30];
 
 let textCount = 0;
 let rowCount = 0;
 let chance = 0;
 let chanceText = "";
+let USER_GUESS_STRUCTURE = [];
+let chanceNodes = [];
 
-window.addEventListener("load", async () => {
-  let response = await fetch(TODAY_URL);
-  let data = await response.json();
-  TODAY_WORD = data.word;
-  console.log(TODAY_WORD);
-});
+// load Today Word
+// window.addEventListener("load", async () => {
+//   let response = await fetch(TODAY_URL);
+//   let data = await response.json();
+//   TODAY_WORD = data.word;
+// });
 
 document.addEventListener("keydown", handelKeyboard);
 
@@ -52,19 +57,21 @@ function handelKeyboard(event) {
 
     textFields[textCount - 1].textContent = "";
     textCount--;
-    console.log(textCount);
   }
 }
 
 function handelFiveChac() {
   if (chancesTracker.includes(textCount)) {
+    console.log("he");
+
     getChanceText();
-    checkingCorrection();
 
     now = Date.now() + 2000;
     setTimeout(() => {
-      rowFields[rowCount].classList.add("correct");
+      isGrammer();
+
       rowFields[rowCount].classList.add("attempted");
+      checkingCorrection();
     }, 300);
   }
 }
@@ -92,7 +99,53 @@ function getChanceText() {
   }
 }
 
-function checkingCorrection() {}
+function checkingCorrection() {
+  let object = {};
+
+  for (let i = 0; i < TODAY_WORD_STRUCTURE.length; i++) {
+    if (!object[TODAY_WORD_STRUCTURE[i]]) {
+      object[TODAY_WORD_STRUCTURE[i]] =
+        TODAY_WORD_STRUCTURE.split(TODAY_WORD_STRUCTURE[i]).length - 1;
+    }
+  }
+
+  for (let i = 0; i < TODAY_WORD_STRUCTURE.length; i++) {
+    if (
+      TODAY_WORD_STRUCTURE[i] === USER_GUESS_STRUCTURE[i] &&
+      object[TODAY_WORD_STRUCTURE[i]] > 0
+    ) {
+      object[USER_GUESS_STRUCTURE[i]]--;
+      chanceNodes[i].classList.add("green");
+    } else if (
+      TODAY_WORD_STRUCTURE.includes(USER_GUESS_STRUCTURE[i]) &&
+      object[USER_GUESS_STRUCTURE[i]] > 0
+    ) {
+      object[USER_GUESS_STRUCTURE[i]]--;
+
+      chanceNodes[i].classList.add("yellow");
+    } else {
+      chanceNodes[i].classList.add("grey");
+    }
+  }
+
+  if (chanceText == TODAY_WORD) {
+    rowFields[rowCount].classList.add("correct");
+  } else {
+    rowFields[rowCount].classList.add("wrong");
+  }
+}
+
+async function isGrammer() {
+  let response = await fetch(VALIDATER_URL, {
+    method: "post",
+    body: JSON.stringify({
+      word: chanceText,
+    }),
+  });
+
+  let data = await response.json();
+  isWordIsValid = data.validWord;
+}
 
 function handelRow() {
   if (textCount / 5 < 1) {
@@ -116,8 +169,12 @@ function isLetter(letter) {
 
 function iterationLoop(start) {
   chanceText = "";
+  chanceNodes = [];
 
-  for (let i = start - 5; i < start + 5; i++) {
+  for (let i = start - 5; i < start; i++) {
     chanceText += textFields[i].textContent;
+    chanceNodes.push(textFields[i]);
   }
+
+  USER_GUESS_STRUCTURE = chanceText; //Array.from(chanceText)
 }
