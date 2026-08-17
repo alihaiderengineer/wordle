@@ -73,8 +73,9 @@ function handelFiveChac() {
       if (!isWordIsValid) {
         rowFields[rowCount].classList.add("attempted");
         rowFields[rowCount].classList.add("invalid");
+
+        return;
       }
-      return;
 
       rowFields[rowCount].classList.add("attempted");
       checkingCorrection();
