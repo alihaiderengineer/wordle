@@ -33,10 +33,10 @@ body {
 }
 
 .play-row.attempted {
-  border: 1px solid yellow;
+  border: 2px solid yellow;
 }
 
-.play-row.invalid {
+.play-row.attempted {
   border: 1px solid red;
 }
 .play-row.wrong {
