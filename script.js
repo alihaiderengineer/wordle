@@ -1,14 +1,33 @@
 // dom
 const textFields = document.querySelectorAll(".play-input-div");
 const rowFields = document.querySelectorAll(".play-row");
+const TODAY_URL = "https://words.dev-apis.com/word-of-the-day?muzzel=1";
 
 let now = Date.now();
+const todayWord = "";
 const chancesTracker = [5, 10, 15, 20, 25, 30];
 
 let textCount = 0;
 let rowCount = 0;
 let chance = 0;
 let chanceText = "";
+
+// async function loadTodayWord() {
+//   console.log("hi");
+
+// let response = await fetch(TODAY_URL);
+// let data = await response.json();
+// console.log(data);
+// }
+
+// loadTodayWord();
+
+window.addEventListener("load", async () => {
+  let response = await fetch(TODAY_URL);
+  let data = await response.json();
+  console.log(data);
+  console.log("hi");
+});
 
 document.addEventListener("keydown", handelKeyboard);
 
